@@ -1,7 +1,7 @@
 package com.example.mvvmone.model
 
 data class animeFilmItem(
-    val description: String,
+    var description: String,
     val director: String,
     val id: String,
     val image: String,

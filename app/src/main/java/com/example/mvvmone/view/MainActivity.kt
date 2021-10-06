@@ -1,18 +1,18 @@
-package com.example.mvvmone
+package com.example.mvvmone.view
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import androidx.lifecycle.viewModelScope
+import androidx.activity.viewModels
+import com.example.mvvmone.R
 import com.example.mvvmone.repository.FilmRepository
+import com.example.mvvmone.viewmodels.FilmViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
 
 class MainActivity : AppCompatActivity() {
     private val repository = FilmRepository()
-
+    private val viewModelFilm: FilmViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -23,10 +23,7 @@ class MainActivity : AppCompatActivity() {
     private fun fetchFilmData() {
 
         CoroutineScope(Dispatchers.IO).launch {
-            val response = repository.getfilms()
-            val ver = response?.body()?.get(0)
-            Log.e("200", ver.toString())
-
+            viewModelFilm.fetchData()
         }
     }
 }

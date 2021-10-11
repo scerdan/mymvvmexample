@@ -1,29 +1,42 @@
 package com.example.mvvmone.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import androidx.activity.viewModels
-import com.example.mvvmone.R
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.example.mvvmone.databinding.ActivityMainBinding
 import com.example.mvvmone.repository.FilmRepository
 import com.example.mvvmone.viewmodels.FilmViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
+
+    private val viewModelFilm: FilmViewModel
+        get() = ViewModelProvider(this).get(FilmViewModel::class.java)
+
     private val repository = FilmRepository()
-    private val viewModelFilm: FilmViewModel by viewModels()
+
+    private val btnOne: Button
+        get() = binding.button
+
+    private val textOne: TextView
+        get() = binding.textView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        fetchFilmData()
-    }
 
-    private fun fetchFilmData() {
-
-        CoroutineScope(Dispatchers.IO).launch {
-            viewModelFilm.fetchData()
+        btnOne.setOnClickListener {
+            viewModelFilm.factsLive.observe(this, Observer {
+                textOne.text = it
+            })
         }
     }
 }

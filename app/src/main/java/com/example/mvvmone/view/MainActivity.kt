@@ -15,11 +15,10 @@ import com.example.mvvmone.viewmodels.FilmViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
+    private val repository = FilmRepository()
 
     private val viewModelFilm: FilmViewModel
         get() = ViewModelProvider(this).get(FilmViewModel::class.java)
-
-    private val repository = FilmRepository()
 
     private val btnOne: Button
         get() = binding.button

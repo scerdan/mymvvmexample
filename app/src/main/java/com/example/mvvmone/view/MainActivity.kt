@@ -8,17 +8,20 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.example.mvvmone.databinding.ActivityMainBinding
 import com.example.mvvmone.repository.FilmRepository
 import com.example.mvvmone.viewmodels.FilmViewModel
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
-    private val repository = FilmRepository()
 
-    private val viewModelFilm: FilmViewModel
-        get() = ViewModelProvider(this).get(FilmViewModel::class.java)
+    private val viewModelFilm: FilmViewModel by viewModels {
+        FilmViewModel.FilmViewModelFactory(
+            repository
+        )
+    }
+
+    private val repository = FilmRepository()
 
     private val btnOne: Button
         get() = binding.button
@@ -30,7 +33,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
 
         btnOne.setOnClickListener {
             viewModelFilm.factsLive.observe(this, Observer {

@@ -1,40 +1,34 @@
 package com.example.mvvmone.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
+import com.example.mvvmone.model.animeFilm
+import com.example.mvvmone.model.animeFilmItem
 import com.example.mvvmone.repository.FilmRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FilmViewModel(private val repository: FilmRepository) : ViewModel() {
+@HiltViewModel
+class FilmViewModel @Inject constructor(private val repository: FilmRepository) : ViewModel() {
 
-    fun fetchData() = liveData(Dispatchers.IO) {
-        try {
-            emit(repository.getfilms()?.body())
-            Log.e("200", "EMITIDO")
-        } catch (e: Exception) {
-            Log.e("ERROR LIVEDATA", e.message.toString())
-        }
+    private val _response = MutableLiveData<List<animeFilmItem>>()
+    val responseFilms: MutableLiveData<List<animeFilmItem>>
+        get() = _response
+
+    init {
+        getData()
     }
 
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val rta = repository.getfilms()?.body()
-//
-//            if (rta != null) {
-//                for (i in 0 until rta.size) {
-//                    Log.e("200", rta[i].title + " " + rta[i].description)
-//                }
-//            }
-//        }
-
-    class FilmViewModelFactory(private val repository: FilmRepository) :
-        ViewModelProvider.Factory {
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            return modelClass.getConstructor(FilmRepository::class.java)
-                .newInstance(repository)
+    private fun getData() =
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.getfilms().let { response ->
+                if (response.isSuccessful) {
+                    _response.postValue(response.body())
+                } else {
+                    Log.d("tag", "peliculas Error: ${response.code()}")
+                }
+            }
         }
-
-    }
 }

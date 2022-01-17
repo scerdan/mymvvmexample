@@ -13,17 +13,13 @@ import com.bumptech.glide.Glide
 import com.example.mvvmone.databinding.ActivityMainBinding
 import com.example.mvvmone.repository.FilmRepository
 import com.example.mvvmone.viewmodels.FilmViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
-    private val viewModelFilm: FilmViewModel by viewModels {
-        FilmViewModel.FilmViewModelFactory(
-            repository
-        )
-    }
-
-    private val repository = FilmRepository()
+    private val viewModelFilm: FilmViewModel by viewModels()
 
     private val btnOne: Button
         get() = binding.button
@@ -43,19 +39,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         btnOne.setOnClickListener {
-            viewModelFilm.fetchData().observe(this, Observer {
+            viewModelFilm.responseFilms.observe(this, {
                 val URL_IMG: String = it?.get(0)?.image.toString()
                 val URL_IMG_TWO: String = it?.get(1)?.image.toString()
 
                 textOne.text = it?.get(0)?.title
-                Log.e("IT", it.toString())
+                Log.e("IT", "$it\n")
 
                 Glide.with(this).load(URL_IMG).into(imgView)
                 Glide.with(this).load(URL_IMG_TWO).into(imgViewTwo)
-
             })
         }
-
-
     }
 }

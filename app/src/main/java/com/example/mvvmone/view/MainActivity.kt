@@ -24,14 +24,20 @@ class MainActivity : AppCompatActivity() {
     private val btnOne: Button
         get() = binding.button
 
-    private val textOne: TextView
-        get() = binding.textView
+    private val titleView: TextView
+        get() = binding.titleView
 
-    private val imgView: ImageView
-        get() = binding.imageView
+    private val castTitle: TextView
+        get() = binding.castTitle
 
-    private val imgViewTwo: ImageView
-        get() = binding.imageViewTwo
+    private val descriptionView: TextView
+        get() = binding.descriptionView
+
+    private val banner: ImageView
+        get() = binding.bannerView
+
+    private val avatarImg: ImageView
+        get() = binding.avatarView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,14 +46,16 @@ class MainActivity : AppCompatActivity() {
 
         btnOne.setOnClickListener {
             viewModelFilm.responseFilms.observe(this, {
-                val URL_IMG: String = it?.get(0)?.image.toString()
+                val URL_IMG: String = it?.get(0)?.movie_banner.toString()
                 val URL_IMG_TWO: String = it?.get(1)?.image.toString()
 
-                textOne.text = it?.get(0)?.title
-                Log.e("IT", "$it\n")
+                titleView.text = it?.get(0)?.original_title
+                castTitle.text = it?.get(0)?.title
+                descriptionView.text = it?.get(0)?.description
+                Log.e("score", it[0].rt_score)
 
-                Glide.with(this).load(URL_IMG).into(imgView)
-                Glide.with(this).load(URL_IMG_TWO).into(imgViewTwo)
+                Glide.with(this).load(URL_IMG).into(banner)
+                Glide.with(this).load(URL_IMG_TWO).into(avatarImg)
             })
         }
     }
